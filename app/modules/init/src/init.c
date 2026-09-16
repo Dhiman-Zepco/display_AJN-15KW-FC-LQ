@@ -90,9 +90,9 @@ void INIT_fnSystemInit()
     UCA0CTLW0 |= UCSSEL__SMCLK;                                // UART Clock selection.
     UCA0CTLW0 |= UCSPB_1;                                      // with stop-bits as 2.
 
-    UCA0BR0 = 104;                                      // 16000000/16/9600------>Baud-rate.
+    UCA0BR0 = 26;                                      // 16000000/16/38400------>Baud-rate.
     UCA0BR1 = 0x00;                                    //Baud-rate control registers, flags.
-    UCA0MCTLW = 0x0110 | UCBRF_2 | UCOS16;             //eUSCI_Ax Modulation Control Word Register.
+    UCA0MCTLW = 0x0100 | UCBRF_2 | UCOS16;             //eUSCI_Ax Modulation Control Word Register.
 
     // Initialize eUSCI, Clearing UCSWRST releases the eUSCI_A for operation.
     UCA0CTLW0 &= ~UCSWRST;

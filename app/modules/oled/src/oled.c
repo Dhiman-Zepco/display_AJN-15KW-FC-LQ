@@ -253,9 +253,14 @@ void OLED_fnUpdateDisplay()
     }
     else
     {
-//        uiPageNo = 1U;
+        OLED_fnPrintPage(uiPageNo);          //System Page Display "switches" here..
     }
 
+    /*
+     *
+     * Auto-scroll logic here.
+     *
+     */
     if ((uiAutoScroll == 1) && (uiEditMode == 0) && (uiAutoScrollEn == 0))
     {
         if (uiAutoScrollDelay >= 100U)
@@ -289,20 +294,19 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
             /**
              * 0123456789ABCDEF
              * ----------------
-             * A:xxx.xV  xx.xA
+             * xxx.xV  xx.xA
              * Status: XXXXXXXX
              */
 
             OLED_fnCommand(0x80);
-//            OLED_fnStrDisp("A:");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 2,
+            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 3,
             filler_space);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(".");
             OLED_fnFracToStr_v2(DisplayDataRx.uiVoutFrac, intstr, 2, 2);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(" V ");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 3,
+            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 2,
             filler_space);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(".");
@@ -349,15 +353,14 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
              *
              */
             OLED_fnCommand(0x80);
-//            OLED_fnStrDisp("A:");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 2,
+            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 3,
             filler_space);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(".");
             OLED_fnFracToStr_v2(DisplayDataRx.uiVoutFrac, intstr, 2, 2);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(" V ");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 3,
+            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 2,
             filler_space);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(".");
@@ -648,12 +651,20 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
 void OLED_fnWelcomePage(void)
 {
     OLED_fnCommand(0x80);
-    OLED_fnStrDisp("  BEL-28V-110A  ");
+    OLED_fnStrDisp("15KW_DC-DC_FC-LQ");
     OLED_fnCommand(0xC0);
-    OLED_fnStrDisp("  BY ZEPCO-TECH ");
-//    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_minor, intstr, 3,
-//    filler_zero);
-//    OLED_fnStrDisp(intstr);
+    OLED_fnStrDisp("Rev.b");
+    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_major, intstr, 3,
+    filler_zero);
+    OLED_fnStrDisp(intstr);
+    OLED_fnStrDisp(".");
+    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_minor, intstr, 3,
+    filler_zero);
+    OLED_fnStrDisp(intstr);
+    OLED_fnStrDisp(".");
+    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver, intstr, 3,
+    filler_zero);
+    OLED_fnStrDisp(intstr);
 }
 
 void OLED_fnStrDisp(const char *str)

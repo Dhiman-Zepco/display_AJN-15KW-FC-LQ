@@ -103,7 +103,7 @@ int main(void)
             }
             else if (ui10msEvtIndex == 2)
             {
-                OLED_fnUpdateDisplay();
+                OLED_fnUpdateDisplay();    // page updation here...
             }
         }
     }

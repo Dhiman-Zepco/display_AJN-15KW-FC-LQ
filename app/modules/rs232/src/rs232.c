@@ -98,7 +98,7 @@ void RS232_fnReceiveFSM(unsigned int uiShowRxByte)
 
         uiRxDataLen = uiRxByteNow;
 
-        if(uiRxDataLen <= 38)           //check if Length is good???
+        if(uiRxDataLen <= 16)           //check if Length is good???
         {
 
             uiRxBuff[uiRxIndex++] = uiRxByteNow;
@@ -190,67 +190,9 @@ void RS232_fnProcessMessage()
 
         DisplayDataRx.CMDH = uiRxBuff[2];
 
-
-        DisplayDataRx.uiRemoteProtect = uiRxBuff[3];        //1 - means safety on, 0- means safety off.
-
-        if(DisplayDataRx.uiRemoteProtect == 0U)
-        {
-            uiResetRemoteProtect = 0U;
-        }
-        else
-        {
-            uiResetRemoteProtect = 1U;
-        }
-
-        /////////////Node-ID////////////////////////////////////////////
-
-        DisplayDataRx.uiNodeId = uiRxBuff[4];
-
-//        if((uiDoOnce ==  1) || (uiResetRemoteProtect == 1))
-//        {
-//            DisplayDataTx.uiNodeId = DisplayDataRx.uiNodeId;
-//        }
-
-        //////////////////Vref Set//////////////////////////////////////
-
-        uiTempVal = (uiRxBuff[5] << 8) | uiRxBuff[6];
-
-        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-        {
-            uiEncoderLVal100x = uiTempVal / 10;
-        }
-
-        ////////////////////Iref Set//////////////////////////////////////////
-
-        uiTempVal = (uiRxBuff[7] << 8) | uiRxBuff[8];
-
-        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-        {
-            uiEncoderRVal100x = uiTempVal / 10;
-        }
-
-
-        ////////////////////////// OVP Value receive //////////////////////////////
-
-        uiTempVal = (uiRxBuff[9] << 8) | uiRxBuff[10];
-
-        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-        {
-            uiEncOVPLVal10x = uiTempVal /10;
-        }
-
-        ////////////////////////// OCP Value receive //////////////////////////////
-
-        uiTempVal = (uiRxBuff[11] << 8) | uiRxBuff[12];
-
-        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-        {
-            uiEncOCPLVal10x = uiTempVal / 10;
-        }
-
         ///////////////////////Vout display//////////////////////////////////////////
 
-        uiTempVal = (uiRxBuff[13] << 8) | uiRxBuff[14];
+        uiTempVal = (uiRxBuff[3] << 8) | uiRxBuff[4];
 
         DisplayDataRx.uiVoutFrac = (unsigned int) (uiTempVal % 100);     //Vrms fractional part.
 
@@ -258,107 +200,153 @@ void RS232_fnProcessMessage()
 
         ///////////////////////Iout Display/////////////////////////////////////////////
 
-        uiTempVal = (uiRxBuff[15] << 8) | uiRxBuff[16];
+        uiTempVal = (uiRxBuff[5] << 8) | uiRxBuff[6];
 
         DisplayDataRx.uiIoutFrac = (unsigned int) (uiTempVal % 100);    //Irms fractional part.
 
         DisplayDataRx.uiIoutInt = (unsigned int) (uiTempVal / 100);     //Irms integer part.
 
-        //////////////////R-Phase////////////////////////////////////////////////////////////////
+        /////////////Node-ID////////////////////////////////////////////
 
-        uiTempVal = (uiRxBuff[17] << 8) | uiRxBuff[18];
-
-        DisplayDataRx.uiRPhVolts = (unsigned int) (uiTempVal / 100 );
-
-        //////////////////Y-Phase////////////////////////////////////////////////////////////////
-
-        uiTempVal = (uiRxBuff[19] << 8) | uiRxBuff[20];
-
-        DisplayDataRx.uiYPhVolts = (unsigned int) (uiTempVal / 100);
-
-        //////////////////B-Phase//////////////////////////////////////////////////////////////////
-
-        uiTempVal = (uiRxBuff[21] << 8) | uiRxBuff[22];
-
-        DisplayDataRx.uiBPhVolts = (unsigned int) (uiTempVal / 100);
-
+        DisplayDataRx.uiNodeId = uiRxBuff[7];
 
         //////////////////////Fault-Registers///////////////////////////////////
 
-        tuFaultReg.all = ((uiRxBuff[23] << 8) | (uiRxBuff[24] & 0xFF));
+        tuFaultReg.all = ((uiRxBuff[8] << 8) | (uiRxBuff[9] & 0xFF));
 
-        ///////////////////// H/W version////////////////////////////////////
+        //////////////pulse_State///////////////////////////////////////////
 
-        uiTempVal = (uiRxBuff[25] & 0xFF);
+        DisplayDataRx.uiPulseState = uiRxBuff[10];  /// 0 - init, 1 - idle, 2 - live , 3 - fault...
+
+        ///////////////////// major version////////////////////////////////////
+
+        uiTempVal = (uiRxBuff[11] & 0xFF);
+
+        DisplayDataRx.uirxbuild_ver = (unsigned int) (uiTempVal);
+
+        //////////////////// minor version////////////////////////////////////
+
+        uiTempVal = (uiRxBuff[12] & 0xFF);
 
         DisplayDataRx.uirxbuild_ver_major = (unsigned int) (uiTempVal);
 
-        //////////////////// S/W version////////////////////////////////////
+        //////////////////// build version////////////////////////////////////
 
-        uiTempVal = (uiRxBuff[26] & 0xFF);
+        uiTempVal = (uiRxBuff[13] & 0xFF);
 
         DisplayDataRx.uirxbuild_ver_minor = (unsigned int) (uiTempVal);
 
 
-        //////////////pulse_State///////////////////////////////////////////
+//
+//        //////////////////Vref Set//////////////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[5] << 8) | uiRxBuff[6];
+//
+//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
+//        {
+//            uiEncoderLVal100x = uiTempVal / 10;
+//        }
+//
+//        ////////////////////Iref Set//////////////////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[7] << 8) | uiRxBuff[8];
+//
+//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
+//        {
+//            uiEncoderRVal100x = uiTempVal / 10;
+//        }
+//
+//
+//        ////////////////////////// OVP Value receive //////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[9] << 8) | uiRxBuff[10];
+//
+//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
+//        {
+//            uiEncOVPLVal10x = uiTempVal /10;
+//        }
+//
+//        ////////////////////////// OCP Value receive //////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[11] << 8) | uiRxBuff[12];
+//
+//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
+//        {
+//            uiEncOCPLVal10x = uiTempVal / 10;
+//        }
+//
+//        //////////////////R-Phase////////////////////////////////////////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[17] << 8) | uiRxBuff[18];
+//
+//        DisplayDataRx.uiRPhVolts = (unsigned int) (uiTempVal / 100 );
+//
+//        //////////////////Y-Phase////////////////////////////////////////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[19] << 8) | uiRxBuff[20];
+//
+//        DisplayDataRx.uiYPhVolts = (unsigned int) (uiTempVal / 100);
+//
+//        //////////////////B-Phase//////////////////////////////////////////////////////////////////
+//
+//        uiTempVal = (uiRxBuff[21] << 8) | uiRxBuff[22];
+//
+//        DisplayDataRx.uiBPhVolts = (unsigned int) (uiTempVal / 100);
 
-        DisplayDataRx.uiPulseState = uiRxBuff[27];  /// 0 - init, 1 - idle, 2 - live , 3 - fault...
-
-
-        /*
-         * Server IP address receive here...
-         */
-
-        DisplayDataRx.uirxservr_ip_oct1 = uiRxBuff[28];   //server_ip_oct1
-
-
-        DisplayDataRx.uirxservr_ip_oct2 = uiRxBuff[29];   //server_ip_oct2
-
-
-        DisplayDataRx.uirxservr_ip_oct3 = uiRxBuff[30];   //server_ip_oct3
-
-
-        DisplayDataRx.uirxservr_ip_oct4 = uiRxBuff[31];   //server_ip_oct4
-
-
-        /*
-         * Client IP address receive here...
-         */
-
-        DisplayDataRx.uirxclient_ip_oct1 = uiRxBuff[32];  //client_ip_oct1
-
-
-        DisplayDataRx.uirxclient_ip_oct2 = uiRxBuff[33];  //client_ip_oct2
-
-
-        DisplayDataRx.uirxclient_ip_oct3 = uiRxBuff[34];  //client_ip_oct3
-
-
-        DisplayDataRx.uirxclient_ip_oct4 = uiRxBuff[35];  //client_ip_oct4
-
-
-        DisplayDataRx.uiCrc = uiRxBuff[36];  // rx-crc
-
-        if((uiEditMode == 0U))
-        {
-            //to copy ip addresses to local variables once.
-
-            uiserver_ip_oct1 = DisplayDataRx.uirxservr_ip_oct1;
-            uiserver_ip_oct2 = DisplayDataRx.uirxservr_ip_oct2;
-            uiserver_ip_oct3 = DisplayDataRx.uirxservr_ip_oct3;
-            uiserver_ip_oct4 = DisplayDataRx.uirxservr_ip_oct4;
-
-
-            uiclient_ip_oct1 = DisplayDataRx.uirxclient_ip_oct1;
-            uiclient_ip_oct2 = DisplayDataRx.uirxclient_ip_oct2;
-            uiclient_ip_oct3 = DisplayDataRx.uirxclient_ip_oct3;
-            uiclient_ip_oct4 = DisplayDataRx.uirxclient_ip_oct4;
-
-        }
-        else
-        {
-
-        }
+        //        /*
+//         * Server IP address receive here...
+//         */
+//
+//        DisplayDataRx.uirxservr_ip_oct1 = uiRxBuff[28];   //server_ip_oct1
+//
+//
+//        DisplayDataRx.uirxservr_ip_oct2 = uiRxBuff[29];   //server_ip_oct2
+//
+//
+//        DisplayDataRx.uirxservr_ip_oct3 = uiRxBuff[30];   //server_ip_oct3
+//
+//
+//        DisplayDataRx.uirxservr_ip_oct4 = uiRxBuff[31];   //server_ip_oct4
+//
+//
+//        /*
+//         * Client IP address receive here...
+//         */
+//
+//        DisplayDataRx.uirxclient_ip_oct1 = uiRxBuff[32];  //client_ip_oct1
+//
+//
+//        DisplayDataRx.uirxclient_ip_oct2 = uiRxBuff[33];  //client_ip_oct2
+//
+//
+//        DisplayDataRx.uirxclient_ip_oct3 = uiRxBuff[34];  //client_ip_oct3
+//
+//
+//        DisplayDataRx.uirxclient_ip_oct4 = uiRxBuff[35];  //client_ip_oct4
+//
+//
+        DisplayDataRx.uiCrc = uiRxBuff[14];  // rx-crc
+//
+//        if((uiEditMode == 0U))
+//        {
+//            //to copy ip addresses to local variables once.
+//
+//            uiserver_ip_oct1 = DisplayDataRx.uirxservr_ip_oct1;
+//            uiserver_ip_oct2 = DisplayDataRx.uirxservr_ip_oct2;
+//            uiserver_ip_oct3 = DisplayDataRx.uirxservr_ip_oct3;
+//            uiserver_ip_oct4 = DisplayDataRx.uirxservr_ip_oct4;
+//
+//
+//            uiclient_ip_oct1 = DisplayDataRx.uirxclient_ip_oct1;
+//            uiclient_ip_oct2 = DisplayDataRx.uirxclient_ip_oct2;
+//            uiclient_ip_oct3 = DisplayDataRx.uirxclient_ip_oct3;
+//            uiclient_ip_oct4 = DisplayDataRx.uirxclient_ip_oct4;
+//
+//        }
+//        else
+//        {
+//
+//        }
 
         uiProcRxPacket = 0;  //todo
 
@@ -368,58 +356,58 @@ void RS232_fnProcessMessage()
          * Transmit Packet
          */
 
-        if((uiDelayTxCnt >= 30U) && (uiSaveDataPending == 1U))  // uiDelayTxCnt == 30U --> 90 mili-secs
-        {
-            if ((uiTxPacket == 0U))                  //Tx -Packet Start.
-            {
-
-                uiTxCrcCalc = 0;
-
-                uiTxBuff[0] = 0xA5;                          //SOF1.
-                uiTxBuff[1] = 0xA5;                          //SOF2.
-
-                uiTxBuff[2] = 0x0D;                   //Length of the "data packet"-13U
-
-                uiTxBuff[3] = 0x00;                          //CMDH
-                uiTxBuff[4] = 0x00;                          //CMDL
-
-                uiTxBuff[5] = DisplayDataTx.uiNodeId; //Node_id Received value is being transmitted.
-
-                uiTxBuff[6] = DisplayDataTx.ui_tx_servr_ip_oct1;
-                uiTxBuff[7] = DisplayDataTx.ui_tx_servr_ip_oct2;
-
-                uiTxBuff[8] = DisplayDataTx.ui_tx_servr_ip_oct3;
-                uiTxBuff[9] = DisplayDataTx.ui_tx_servr_ip_oct4;
-
-                uiTxBuff[10] = DisplayDataTx.ui_tx_client_ip_oct1;
-                uiTxBuff[11] = DisplayDataTx.ui_tx_client_ip_oct2;
-
-                uiTxBuff[12] = DisplayDataTx.ui_tx_client_ip_oct3;
-                uiTxBuff[13] = DisplayDataTx.ui_tx_client_ip_oct4;
-
-                uiTxBuff[14] = DisplayDataTx.ui_IP_reset_flag;
-
-                for (i = 2; i <= 14; i++)
-                {
-                    uiTxCrcCalc += uiTxBuff[i];          //CRC calc...
-                }
-
-                uiTxBuff[15] = (uiTxCrcCalc & 0xFF);    //CRC sum value...
-
-                uiTxPacket = 1U;
-                uiTxPacketLength = 16U;
-                uiTxPacketIndex = 0;
-                uiTxWait = 5;
-
-                DisplayDataTx.ui_IP_reset_flag = 0U;  //reset ip_reset_trigger flag..
-                uiSaveDataPending = 0U;
-                uiDelayTxCnt = 0U;
-            }
-        }
-        else
-        {
-            uiDelayTxCnt++;
-        }
+//        if((uiDelayTxCnt >= 30U) && (uiSaveDataPending == 1U))  // uiDelayTxCnt == 30U --> 90 mili-secs
+//        {
+//            if ((uiTxPacket == 0U))                  //Tx -Packet Start.
+//            {
+//
+//                uiTxCrcCalc = 0;
+//
+//                uiTxBuff[0] = 0xA5;                          //SOF1.
+//                uiTxBuff[1] = 0xA5;                          //SOF2.
+//
+//                uiTxBuff[2] = 0x0D;                   //Length of the "data packet"-13U
+//
+//                uiTxBuff[3] = 0x00;                          //CMDH
+//                uiTxBuff[4] = 0x00;                          //CMDL
+//
+//                uiTxBuff[5] = DisplayDataTx.uiNodeId; //Node_id Received value is being transmitted.
+//
+//                uiTxBuff[6] = DisplayDataTx.ui_tx_servr_ip_oct1;
+//                uiTxBuff[7] = DisplayDataTx.ui_tx_servr_ip_oct2;
+//
+//                uiTxBuff[8] = DisplayDataTx.ui_tx_servr_ip_oct3;
+//                uiTxBuff[9] = DisplayDataTx.ui_tx_servr_ip_oct4;
+//
+//                uiTxBuff[10] = DisplayDataTx.ui_tx_client_ip_oct1;
+//                uiTxBuff[11] = DisplayDataTx.ui_tx_client_ip_oct2;
+//
+//                uiTxBuff[12] = DisplayDataTx.ui_tx_client_ip_oct3;
+//                uiTxBuff[13] = DisplayDataTx.ui_tx_client_ip_oct4;
+//
+//                uiTxBuff[14] = DisplayDataTx.ui_IP_reset_flag;
+//
+//                for (i = 2; i <= 14; i++)
+//                {
+//                    uiTxCrcCalc += uiTxBuff[i];          //CRC calc...
+//                }
+//
+//                uiTxBuff[15] = (uiTxCrcCalc & 0xFF);    //CRC sum value...
+//
+//                uiTxPacket = 1U;
+//                uiTxPacketLength = 16U;
+//                uiTxPacketIndex = 0;
+//                uiTxWait = 5;
+//
+//                DisplayDataTx.ui_IP_reset_flag = 0U;  //reset ip_reset_trigger flag..
+//                uiSaveDataPending = 0U;
+//                uiDelayTxCnt = 0U;
+//            }
+//        }
+//        else
+//        {
+//            uiDelayTxCnt++;
+//        }
     }
     else
     {
@@ -427,7 +415,7 @@ void RS232_fnProcessMessage()
 
         if(uiErrCnt >= 256)
         {
-            uiCommError = 1U;
+//            uiCommError = 1U;
         }
     }
 }

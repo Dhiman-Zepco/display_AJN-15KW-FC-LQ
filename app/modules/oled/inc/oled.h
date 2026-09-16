@@ -69,6 +69,7 @@ typedef struct OLED_RzDISPLAY_DATA
     unsigned int uiFaultReg;               //recvd fault status.
     unsigned int uiPulseState;             //recvd pulse status.
     unsigned int ui_op_mode;               //CV/CC modes.
+    unsigned int uirxbuild_ver;             //Build version..
     unsigned int uirxbuild_ver_major;      //Build version major number.
     unsigned int uirxbuild_ver_minor;      //Build version minor number.
     unsigned int uirxservr_ip_oct1;         //rx_server ip octet 1.

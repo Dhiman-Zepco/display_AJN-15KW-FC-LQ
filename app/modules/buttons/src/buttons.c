@@ -37,7 +37,7 @@ unsigned int uiOnOffSwitch = 0U;
 unsigned int uiCoarseFinetoggle;   //Coarse-fine mode for encoders
 
 unsigned int uiPageNo;
-unsigned int uiLastPage = 6U;    //last page is 6th now.
+unsigned int uiLastPage = 2U;    //last page is 6th now.
 
 unsigned int left_mode = 0;
 unsigned int right_mode = 0;
@@ -73,14 +73,14 @@ void Button_fnRightEncoder(void);
 
 void Tactile_fnButtonPress()
 {
-    ////////////////////////Button_2 //////// as per schematic.
+    ////////////////////////Button_1 //////// as per schematic.
     /*
-     * Button 2 Remote-->  Page-UP/count++
+     * Button 1 -->  Page-UP/count++
      * Increment/Up Button
-     *(P6.1)
+     *(P6.0)
      */
 
-    if (((P6IN & 0x02) == 0x00) && (uiKey2State == 0))
+    if (((P6IN & 0x01) == 0x00) && (uiKey2State == 0))
     {
         if (uiKey2DebCnt >= 5U) //5U --> ( 5 unsigned * no. of times the function/event being called. )
         {
@@ -222,11 +222,11 @@ void Tactile_fnButtonPress()
         uiKey2DebCnt = 0;
     }
 
-////////////////////////Button_3 //////// as per schematic.
-//( Decrement/Down Button - 3rd button)--->(P6.2)
-//////////////////////////////////////////////////////////
+/*Button_2 //////// as per schematic.
+ * ( Decrement/Down Button - 2nd button)--->(P6.1)
+ */
 
-    if (((P6IN & 0x04) == 0x00) && (uiKey3State == 0))
+    if (((P6IN & 0x02) == 0x00) && (uiKey3State == 0))
     {
         if (uiKey3DebCnt >= 5U) //5U --> ( 5 unsigned * no. of times the function/event being called. )
         {
@@ -365,9 +365,11 @@ void Tactile_fnButtonPress()
         uiKey3DebCnt = 0;
     }
 
-    //Button 4 as per schematic...
-    //(NodeID/IP Config Edit button...
-    if ((P6IN & 0x08) == 0x00)
+   /* Button 3 as per schematic --> P6.2
+    * (NodeID/IP_Configuration/Edit button.
+    *
+    */
+    if ((P6IN & 0x04) == 0x00)
     {
         if ((uiKey4DebCnt >= 30U) && (uiPageNo == 2U)) //50U --> ( 50 unsigned * no. of times the function/event being called. )
         {
@@ -463,18 +465,14 @@ void Tactile_fnButtonPress()
         uiKey4DebCnt = 0;
     }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    //Button - 5 (as per schematic...) -->(P6.4)
-
     /***
+     * Button - 4 (as per schematic...) -->(P6.3)
      *
-     *
-     * Position switch button...
-     *
+     * Position switch button.
+     * Default IP trigger switch.
      */
 
-    if ((P6IN & 0x10) == 0x00)
+    if ((P6IN & 0x08) == 0x00)
     {
         if (uiKey5State == 0U)
         {
