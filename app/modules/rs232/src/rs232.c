@@ -194,9 +194,9 @@ void RS232_fnProcessMessage()
 
         uiTempVal = (uiRxBuff[3] << 8) | uiRxBuff[4];
 
-        DisplayDataRx.uiVoutFrac = (unsigned int) (uiTempVal % 100);     //Vrms fractional part.
+        DisplayDataRx.uiVoutFrac = (unsigned int) (uiTempVal % 10);     //Vrms fractional part.
 
-        DisplayDataRx.uiVoutInt = (unsigned int) (uiTempVal / 100);      //Vrms integer part.
+        DisplayDataRx.uiVoutInt = (unsigned int) (uiTempVal / 10);      //Vrms integer part.
 
         ///////////////////////Iout Display/////////////////////////////////////////////
 
@@ -216,7 +216,7 @@ void RS232_fnProcessMessage()
 
         //////////////pulse_State///////////////////////////////////////////
 
-        DisplayDataRx.uiPulseState = uiRxBuff[10];  /// 0 - init, 1 - idle, 2 - live , 3 - fault...
+        DisplayDataRx.uiPulseState = uiRxBuff[10];  /// 0 - init, 1 - precharge, 2 - idle , 3 - live , 4 - fault.
 
         ///////////////////// major version////////////////////////////////////
 
@@ -237,95 +237,9 @@ void RS232_fnProcessMessage()
         DisplayDataRx.uirxbuild_ver_minor = (unsigned int) (uiTempVal);
 
 
-//
-//        //////////////////Vref Set//////////////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[5] << 8) | uiRxBuff[6];
-//
-//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-//        {
-//            uiEncoderLVal100x = uiTempVal / 10;
-//        }
-//
-//        ////////////////////Iref Set//////////////////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[7] << 8) | uiRxBuff[8];
-//
-//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-//        {
-//            uiEncoderRVal100x = uiTempVal / 10;
-//        }
-//
-//
-//        ////////////////////////// OVP Value receive //////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[9] << 8) | uiRxBuff[10];
-//
-//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-//        {
-//            uiEncOVPLVal10x = uiTempVal /10;
-//        }
-//
-//        ////////////////////////// OCP Value receive //////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[11] << 8) | uiRxBuff[12];
-//
-//        if((uiDoOnce == 1) || (uiResetRemoteProtect == 1))
-//        {
-//            uiEncOCPLVal10x = uiTempVal / 10;
-//        }
-//
-//        //////////////////R-Phase////////////////////////////////////////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[17] << 8) | uiRxBuff[18];
-//
-//        DisplayDataRx.uiRPhVolts = (unsigned int) (uiTempVal / 100 );
-//
-//        //////////////////Y-Phase////////////////////////////////////////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[19] << 8) | uiRxBuff[20];
-//
-//        DisplayDataRx.uiYPhVolts = (unsigned int) (uiTempVal / 100);
-//
-//        //////////////////B-Phase//////////////////////////////////////////////////////////////////
-//
-//        uiTempVal = (uiRxBuff[21] << 8) | uiRxBuff[22];
-//
-//        DisplayDataRx.uiBPhVolts = (unsigned int) (uiTempVal / 100);
+        uiTempVal = (uiRxBuff[14] & 0xFF);
 
-        //        /*
-//         * Server IP address receive here...
-//         */
-//
-//        DisplayDataRx.uirxservr_ip_oct1 = uiRxBuff[28];   //server_ip_oct1
-//
-//
-//        DisplayDataRx.uirxservr_ip_oct2 = uiRxBuff[29];   //server_ip_oct2
-//
-//
-//        DisplayDataRx.uirxservr_ip_oct3 = uiRxBuff[30];   //server_ip_oct3
-//
-//
-//        DisplayDataRx.uirxservr_ip_oct4 = uiRxBuff[31];   //server_ip_oct4
-//
-//
-//        /*
-//         * Client IP address receive here...
-//         */
-//
-//        DisplayDataRx.uirxclient_ip_oct1 = uiRxBuff[32];  //client_ip_oct1
-//
-//
-//        DisplayDataRx.uirxclient_ip_oct2 = uiRxBuff[33];  //client_ip_oct2
-//
-//
-//        DisplayDataRx.uirxclient_ip_oct3 = uiRxBuff[34];  //client_ip_oct3
-//
-//
-//        DisplayDataRx.uirxclient_ip_oct4 = uiRxBuff[35];  //client_ip_oct4
-//
-//
-        DisplayDataRx.uiCrc = uiRxBuff[14];  // rx-crc
+        DisplayDataRx.uiCrc = (unsigned int) (uiTempVal);  // rx-crc
 //
 //        if((uiEditMode == 0U))
 //        {
@@ -415,7 +329,7 @@ void RS232_fnProcessMessage()
 
         if(uiErrCnt >= 256)
         {
-//            uiCommError = 1U;
+            uiCommError = 1U;
         }
     }
 }

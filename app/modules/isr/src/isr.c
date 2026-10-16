@@ -53,6 +53,7 @@ unsigned int cr_received = 0;
 unsigned int rxbuffer_length = 0;
 unsigned int uiTxPacketIndex = 0;
 unsigned int ui10msTicks = 0;
+unsigned int uiOLEDUpdateTicks = 0;
 unsigned int uiTxWait = 0U;
 
 unsigned int uiLCoarseValint;
@@ -518,6 +519,14 @@ __interrupt void Timer0_B0_ISR (void)
     else
     {
 
+    }
+
+    uiOLEDUpdateTicks++;
+
+    if(uiOLEDUpdateTicks >= 500)
+    {
+        uiOLEDUpdateTicks = 0;
+        uiTrigOLEDUpdateEvt = 1;
     }
 
     if(uiTxPacket == 1)

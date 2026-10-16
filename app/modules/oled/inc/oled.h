@@ -117,16 +117,18 @@ typedef struct OLED_TzDISPLAY_DATA
 
 typedef struct OLED_zFAULT_BITS
 {
-    unsigned btEEPROMFault:1;               //EEPROM Fault.
-    unsigned btGridUnderVoltage:1;         //Grid Under voltage
-    unsigned btGridOverVoltage:1;          //Grid Over Voltage
-    unsigned btGridLineL1Loss:1;           //Grid L1 Phase Loss
-    unsigned btGridLineL2Loss:1;           //Grid L2 Phase Loss
-    unsigned btGridLineL3Loss:1;           //Grid L3 Phase Loss
-    unsigned btOverVoltage:1;              //Over Voltage
-    unsigned btOverCurrent:1;              //Over Current
-    unsigned btOTPFault:1;                  //Over temperature trip fault.
-    unsigned Reserved10:1;                  //Reserved bit.
+    unsigned int bt_Boost1_OverCurrent:1;  // Boost1 OverCurrent
+    unsigned int bt_Boost2_OverCurrent:1;  // Boost2 OverCurrent
+    unsigned int bt_PSFB_OverCurrent:1;     // PSFB OverCurrent
+    unsigned int bt_BoostOverVoltage:1;    //Boost Over Voltage
+    unsigned int bt_BoostUnderVoltage:1;   //Boost Under Voltage.
+    unsigned int bt_PSFBOverVoltage:1;     //PSFB_OverVoltage.
+    unsigned int bt_PSFBUnderVoltage:1;    //PSFB Under Voltage.
+    unsigned int bt_OTPFault:1;            //Over temperature trip fault.
+    unsigned int bt_EEPROMFault:1;         //EEPROM Fault.
+    unsigned int bt_FCUnderVoltage:1;      //FCnderVoltage
+    unsigned int bt_FCOverVoltage:1;       //FC_OverVoltage
+    unsigned int Reserved12:1;             //Reserved bit.
 } OLED_tzFAULT_BITS;
 
 

@@ -43,6 +43,7 @@ All trademarks are owned by Zepco Technologies Pvt. Ltd.
 
 unsigned int ui10msEvtIndex = 0;
 unsigned int uiTrig10msEvt = 0;
+unsigned int uiTrigOLEDUpdateEvt = 0;
 
 /*==============================================================================
  Local Constants

@@ -37,7 +37,7 @@ unsigned int uiOnOffSwitch = 0U;
 unsigned int uiCoarseFinetoggle;   //Coarse-fine mode for encoders
 
 unsigned int uiPageNo;
-unsigned int uiLastPage = 2U;    //last page is 6th now.
+unsigned int uiLastPage = 2U;    //last page is 3rd now.
 
 unsigned int left_mode = 0;
 unsigned int right_mode = 0;

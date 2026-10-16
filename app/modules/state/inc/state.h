@@ -43,6 +43,7 @@ All trademarks are owned by Zepco Technologies Pvt. Ltd.
 ==============================================================================*/
 
 extern unsigned int uiTrig10msEvt;
+extern unsigned int uiTrigOLEDUpdateEvt;
 extern unsigned int ui10msEvtIndex;
 
 /*==============================================================================

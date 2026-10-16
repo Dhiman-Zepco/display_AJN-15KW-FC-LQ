@@ -82,15 +82,9 @@ int main(void)
 
             ui10msEvtIndex++;
 
-
-
-            if (ui10msEvtIndex >= 3)  //switching each modules of the display.
+            if (ui10msEvtIndex >= 2)  //switching each modules of the display.
             {
                 ui10msEvtIndex = 0;
-            }
-            else
-            {
-
             }
 
             if (ui10msEvtIndex == 0)
@@ -101,10 +95,11 @@ int main(void)
             {
                 Tactile_fnButtonPress();   //Tactile Buttons press logics...
             }
-            else if (ui10msEvtIndex == 2)
-            {
-                OLED_fnUpdateDisplay();    // page updation here...
-            }
+        }
+        else if(uiTrigOLEDUpdateEvt == 1)
+        {
+            uiTrigOLEDUpdateEvt = 0;
+            OLED_fnUpdateDisplay();    // page updation here...
         }
     }
 }

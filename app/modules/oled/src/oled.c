@@ -244,7 +244,7 @@ void OLED_fnUpdateDisplay()
         if (uiAutoScrollEn == 0)
         {
             uiAutoScrollEn = 0;
-            uiPageNo = 6U;   /// Fault page button scroll lock...
+            uiPageNo = 3U;   /// Fault page button scroll lock...
         }
         else
         {
@@ -299,38 +299,43 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
              */
 
             OLED_fnCommand(0x80);
+            OLED_fnStrDisp("    ");
             OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 3,
             filler_space);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(".");
             OLED_fnFracToStr_v2(DisplayDataRx.uiVoutFrac, intstr, 2, 2);
             OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(" V ");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 2,
-            filler_space);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(".");
-            OLED_fnFracToStr_v2(DisplayDataRx.uiIoutFrac, intstr, 2, 2);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(" ");
-            OLED_fnStrDisp("A");
+            OLED_fnStrDisp(" V    ");
+//            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 2,
+//            filler_space);
+//            OLED_fnStrDisp(intstr);
+//            OLED_fnStrDisp(".");
+//            OLED_fnFracToStr_v2(DisplayDataRx.uiIoutFrac, intstr, 2, 2);
+//            OLED_fnStrDisp(intstr);
+//            OLED_fnStrDisp(" ");
+//            OLED_fnStrDisp("A");
 
             OLED_fnCommand(0xC0);
-            OLED_fnStrDisp("Status: ");
+            OLED_fnStrDisp("STATUS: ");
 
-            if (DisplayDataRx.uiPulseState == 3)
+            if (DisplayDataRx.uiPulseState == 4U)
             {
                 OLED_fnStrDisp("FAULT   ");
             }
             else
             {
-                if (DisplayDataRx.uiPulseState == 2)
+                if (DisplayDataRx.uiPulseState == 3)
                 {
                     OLED_fnStrDisp("LIVE    ");
                 }
-                else if (DisplayDataRx.uiPulseState == 1)
+                else if(DisplayDataRx.uiPulseState == 2)
                 {
                     OLED_fnStrDisp("IDLE    ");
+                }
+                else if (DisplayDataRx.uiPulseState == 1)
+                {
+                    OLED_fnStrDisp("PRCHARGE");
                 }
                 else if (DisplayDataRx.uiPulseState == 0)
                 {
@@ -353,24 +358,17 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
              *
              */
             OLED_fnCommand(0x80);
-            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 3,
-            filler_space);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(".");
-            OLED_fnFracToStr_v2(DisplayDataRx.uiVoutFrac, intstr, 2, 2);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(" V ");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 2,
-            filler_space);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(".");
-            OLED_fnFracToStr_v2(DisplayDataRx.uiIoutFrac, intstr, 2, 2);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(" ");
-            OLED_fnStrDisp("A");
+
+            OLED_fnStrDisp("FLT:");      //4
+
+            OLED_fnStrDisp(fault_lookup());
 
 
             OLED_fnCommand(0xC0);
+            OLED_fnStrDisp("                ");
+
+
+            OLED_fnCommand(0x80);
             OLED_fnStrDisp("Node ID: ");
 
             if (uiEditMode == 1)
@@ -394,8 +392,52 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
                 OLED_fnStrDisp("     ");
             }
 
+            OLED_fnCommand(0xC0);
+
+            OLED_fnStrDisp("FLT:");      //6
+
+            OLED_fnStrDisp(fault_lookup());
+
+
+
+
             break;
         case 3:
+
+
+            /**
+             * 0123456789ABCDEF
+             * ----------------
+             * A: xxx.xV xx.xxA
+             * Fault:NO FAULT
+             *
+             */
+
+            OLED_fnCommand(0x80);
+            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 2,
+            filler_space);
+            OLED_fnStrDisp(intstr);
+            OLED_fnStrDisp(".");
+            OLED_fnFracToStr_v2(DisplayDataRx.uiVoutFrac, intstr, 2, 2);
+            OLED_fnStrDisp(intstr);
+            OLED_fnStrDisp(" V ");
+            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 3,
+            filler_space);
+            OLED_fnStrDisp(intstr);
+            OLED_fnStrDisp(".");
+            OLED_fnFracToStr_v2(DisplayDataRx.uiIoutFrac, intstr, 2, 2);
+            OLED_fnStrDisp(intstr);
+            OLED_fnStrDisp(" ");
+            OLED_fnStrDisp("A");
+
+            OLED_fnCommand(0xC0);
+
+            OLED_fnStrDisp("FLT:");      //6
+
+            OLED_fnStrDisp(fault_lookup());
+
+            break;
+        case 4:
             OLED_fnCommand(0x80);
             OLED_fnStrDisp("ServerIP_setting");
 
@@ -464,7 +506,7 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
             }
             break;
 
-        case 4:
+        case 5:
             OLED_fnCommand(0x80);
             OLED_fnStrDisp("ClientIP_setting");
 
@@ -531,7 +573,7 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
                 OLED_fnStrDisp(" ");
             }
             break;
-        case 5:
+        case 6:
 
             /**
              * 0123456789ABCDEF
@@ -566,7 +608,7 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
             }
 
             break;
-        case 6:
+        case 7:
 
             /**
              * 0123456789ABCDEF
@@ -601,7 +643,7 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
 
 
             break;
-        case 7:
+        case 8:
 
             OLED_fnCommand(0x80);
             OLED_fnStrDisp("A:");
@@ -634,6 +676,7 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
             OLED_fnStrDisp("  ");
 //            OLED_fnData(0xF2);      ////------->*C
 //            OLED_fnStrDisp("C");
+            break;
         default:
             break;
         }
@@ -653,18 +696,19 @@ void OLED_fnWelcomePage(void)
     OLED_fnCommand(0x80);
     OLED_fnStrDisp("15KW_DC-DC_FC-LQ");
     OLED_fnCommand(0xC0);
-    OLED_fnStrDisp("Rev.b");
-    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_major, intstr, 3,
-    filler_zero);
+    OLED_fnStrDisp("   VER: ");
+    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_major, intstr, 1,
+    filler_space);
     OLED_fnStrDisp(intstr);
     OLED_fnStrDisp(".");
-    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_minor, intstr, 3,
-    filler_zero);
+    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver_minor, intstr, 1,
+    filler_space);
     OLED_fnStrDisp(intstr);
     OLED_fnStrDisp(".");
-    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver, intstr, 3,
-    filler_zero);
+    OLED_fnIntToStr_v2(DisplayDataRx.uirxbuild_ver, intstr, 1,
+    filler_space);
     OLED_fnStrDisp(intstr);
+    OLED_fnStrDisp("   ");
 }
 
 void OLED_fnStrDisp(const char *str)
@@ -765,44 +809,47 @@ int OLED_fnFracToStr_v2(int x, char str[], int d, int mult)
 typedef struct
 {
     uint8_t   active;
-    const char *text;   /* must be <=10 chars to fit " %10s" field */
+    const char *text;   /* must be <=12 chars to fit " %12s" field */
 } FaultEntry_t;
 
 static const char *fault_lookup(void)
 {
-    static uint8_t  activeIdx[9];   /* holds indices of active faults */
+    static uint8_t  activeIdx[11];   /* holds indices of active faults */
     static uint8_t  activeCount = 0;
     static uint16_t blinkTimer  = 0;
     static uint8_t  showIdx     = 0;
 
-    static const char *faultText[9] =
+    static const char *faultText[11] =
     {
-        " EPRM FLT ",
-        " GRID UV  ",
-        " GRID OV  ",
-        " R-PHLOSS ",
-        " Y-PHLOSS ",
-        " B-PHLOSS ",
-        " OUT OV   ",
-        " OUT OC   ",
-        " OTP      "
+        " B-CH1-OC   ",
+        " B-CH1-OC   ",
+        " PSFB-OC    ",
+        " B-OV       ",
+        " B-UV       ",
+        " PSFB-OV    ",
+        " PSFB-UV    ",
+        " OTP        ",
+        " EEPROM     ",
+        " FC-UV      ",
+        " FC-OV      ",
     };
 
-    uint8_t bits[9];
-    bits[0] = tuFaultReg.bit.btEEPROMFault;
-    bits[1] = tuFaultReg.bit.btGridUnderVoltage;
-    bits[2] = tuFaultReg.bit.btGridOverVoltage;
-    bits[3] = tuFaultReg.bit.btGridLineL1Loss;
-    bits[4] = tuFaultReg.bit.btGridLineL2Loss;
-    bits[5] = tuFaultReg.bit.btGridLineL3Loss;
-    bits[6] = tuFaultReg.bit.btOverVoltage;
-    bits[7] = tuFaultReg.bit.btOverCurrent;
-    bits[8] = tuFaultReg.bit.btOTPFault;
+    uint8_t bits[10];
+    bits[0] = tuFaultReg.bit.bt_Boost1_OverCurrent;
+    bits[1] = tuFaultReg.bit.bt_Boost2_OverCurrent;
+    bits[2] = tuFaultReg.bit.bt_PSFB_OverCurrent;
+    bits[3] = tuFaultReg.bit.bt_BoostOverVoltage;
+    bits[4] = tuFaultReg.bit.bt_BoostUnderVoltage;
+    bits[5] = tuFaultReg.bit.bt_PSFBOverVoltage;
+    bits[6] = tuFaultReg.bit.bt_OTPFault;
+    bits[7] = tuFaultReg.bit.bt_EEPROMFault;
+    bits[8] = tuFaultReg.bit.bt_FCUnderVoltage;
+    bits[9] = tuFaultReg.bit.bt_FCOverVoltage;
 
-    /* Rebuild list of active faults every call (cheap, 9 checks) */
+    /* Rebuild list of active faults every call (cheap, 10 checks) */
     activeCount = 0;
     uint8_t i;
-    for (i = 0U; i < 9U; i++)
+    for (i = 0U; i < 10U; i++)
     {
         if (bits[i] == 1U)
         {
@@ -813,7 +860,7 @@ static const char *fault_lookup(void)
 
     if (activeCount == 0U)
     {
-        return " NO FAULT ";
+        return "   NO FLT   ";
     }
 
     /* Advance blink timer; this function assumed called ~every 100ms.
