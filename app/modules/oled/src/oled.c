@@ -239,12 +239,12 @@ void OLED_fnUpdateDisplay()
         uiAutoScroll = 0;                   //Auto Scroll disabling.
     }
 
-    if (tuFaultReg.all > 0)   /// Fault page scroll lock...
+    /*if (tuFaultReg.all > 0)   /// Fault page scroll lock...
     {
         if (uiAutoScrollEn == 0)
         {
             uiAutoScrollEn = 0;
-            uiPageNo = 3U;   /// Fault page button scroll lock...
+            uiPageNo = 2U;   /// Fault page button scroll lock...
         }
         else
         {
@@ -254,7 +254,7 @@ void OLED_fnUpdateDisplay()
     else
     {
         OLED_fnPrintPage(uiPageNo);          //System Page Display "switches" here..
-    }
+    }*/
 
     /*
      *
@@ -327,7 +327,7 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
             {
                 if (DisplayDataRx.uiPulseState == 3)
                 {
-                    OLED_fnStrDisp("LIVE    ");
+                    OLED_fnStrDisp("OK      ");
                 }
                 else if(DisplayDataRx.uiPulseState == 2)
                 {
@@ -358,17 +358,6 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
              *
              */
             OLED_fnCommand(0x80);
-
-            OLED_fnStrDisp("FLT:");      //4
-
-            OLED_fnStrDisp(fault_lookup());
-
-
-            OLED_fnCommand(0xC0);
-            OLED_fnStrDisp("                ");
-
-
-            OLED_fnCommand(0x80);
             OLED_fnStrDisp("Node ID: ");
 
             if (uiEditMode == 1)
@@ -392,14 +381,11 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
                 OLED_fnStrDisp("     ");
             }
 
-            OLED_fnCommand(0xC0);
 
-            OLED_fnStrDisp("FLT:");      //6
+            OLED_fnCommand(0xC0);
+            OLED_fnStrDisp("FLT:");      //4
 
             OLED_fnStrDisp(fault_lookup());
-
-
-
 
             break;
         case 3:
@@ -414,21 +400,15 @@ void OLED_fnPrintPage(unsigned int uiPgNo)
              */
 
             OLED_fnCommand(0x80);
-            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 2,
+            OLED_fnStrDisp("    ");
+            OLED_fnIntToStr_v2(DisplayDataRx.uiVoutInt, intstr, 3,
             filler_space);
             OLED_fnStrDisp(intstr);
             OLED_fnStrDisp(".");
             OLED_fnFracToStr_v2(DisplayDataRx.uiVoutFrac, intstr, 2, 2);
             OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(" V ");
-            OLED_fnIntToStr_v2(DisplayDataRx.uiIoutInt, intstr, 3,
-            filler_space);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(".");
-            OLED_fnFracToStr_v2(DisplayDataRx.uiIoutFrac, intstr, 2, 2);
-            OLED_fnStrDisp(intstr);
-            OLED_fnStrDisp(" ");
-            OLED_fnStrDisp("A");
+            OLED_fnStrDisp(" V    ");
+
 
             OLED_fnCommand(0xC0);
 
